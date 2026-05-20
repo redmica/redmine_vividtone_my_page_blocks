@@ -48,10 +48,10 @@
   <%= render :partial => 'my/list_simple', :locals => {:issues => near_due_issues.first(30)} unless near_due_issues.empty? %>
 <% end %>
 
-<p class="small">
-<%= link_to l(:label_vmpb_all_my_issues), :controller => 'issues',
-      :action => 'index', :set_filter => 1, :assigned_to_id => 'me',
-      :sort => 'priority:desc,due_date:asc' %>
-<%= ' | '.html_safe + link_to(l(:label_vmpb_overall_issues), :controller => 'issues',
-  :action => 'index', :sort => 'priority:desc,due_date:asc') if User.current.allowed_to?(:view_issues, nil, :global => true) %>
-</p>
+<%
+  base_params = { controller: 'issues', action: 'index', set_filter: 1, sort: 'priority:desc,due_date:asc' }
+  links = []
+  links << link_to(l(:label_vmpb_all_my_issues), base_params.merge(assigned_to_id: 'me'))
+  links << link_to(l(:label_vmpb_overall_issues), base_params) if User.current.allowed_to?(:view_issues, nil, global: true)
+%>
+<p class="small"><%= safe_join(links, ' | ') %></p>

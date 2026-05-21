@@ -1,7 +1,7 @@
 <%
   current_user = User.current
   events = Redmine::Activity::Fetcher.new(current_user, :author => current_user).events(nil, nil, :limit => 10)
-  events_by_day = events.group_by(&:event_date)
+  events_by_day = events.group_by {|event| User.current.time_to_date(event.event_datetime)}
   my_activity_url = url_for(:controller => 'activities', :action => 'index', :id => nil, :user_id => current_user, :from => events_by_day.keys.first)
 %>
 
